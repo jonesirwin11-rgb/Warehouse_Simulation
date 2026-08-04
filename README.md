@@ -27,21 +27,19 @@ This Proof of Concept (POC) acts as a vision-based digital twin module for Indus
 
 ## ⚙️ Installation & Setup
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/your-username/your-repository-name.git](https://github.com/your-username/your-repository-name.git)
-   cd your-repository-name
-Create and activate a virtual environment (Recommended):
+**1. Clone the repository:**
+```bash
+git clone [https://github.com/jonesirwin11-rgb/Warehouse_Simulation.git](https://github.com/jonesirwin11-rgb/Warehouse_Simulation.git)
+cd Warehouse_Simulation
 
-Bash
+Create and activate a virtual environment (Recommended):
 python -m venv warehouse_env
 # On Windows:
 warehouse_env\Scripts\activate
 # On WSL/Linux:
 source warehouse_env/bin/activate
-Install the required dependencies:
 
-Bash
+Install the required dependencies:
 pip install -r requirements.txt
 Note: The proprietary dataset used to train the YOLOv8 model is kept private and is not included in this repository. However, the custom trained weights (best.pt) are provided to test the pipeline.
 
@@ -64,11 +62,15 @@ Run the main pipeline to process the video, track the cartons, and calculate the
 
 Bash
 python demo_wms.py
+
+
 3. Generate Synthetic Test Data (Optional)
 If you do not have CCTV footage available, you can generate a synthetic sliding-box video to test the tracker and tripwire logic programmatically:
 
 Bash
 python make_synthetic_video.py
+
+
 📊 Outputs & Deliverables
 Running the main pipeline will generate two primary outputs:
 
