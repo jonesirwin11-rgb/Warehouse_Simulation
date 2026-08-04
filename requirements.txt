@@ -1,0 +1,10 @@
+# Computer Vision & Machine Learning
+ultralytics
+opencv-python
+
+# Tracking & Analytics
+supervision
+
+# Data Manipulation & Reporting
+numpy
+pandas
