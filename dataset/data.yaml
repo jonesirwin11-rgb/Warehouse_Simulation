@@ -1,7 +1,0 @@
-names:
-- box
-nc: 1
-path: D:\Warehouse_Management\dataset
-test: images/test
-train: images/train
-val: images/val
