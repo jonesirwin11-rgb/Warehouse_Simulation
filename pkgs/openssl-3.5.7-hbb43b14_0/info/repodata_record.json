@@ -1,0 +1,25 @@
+{
+  "name": "openssl",
+  "version": "3.5.7",
+  "build": "hbb43b14_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "subdir": "win-64",
+  "fn": "openssl-3.5.7-hbb43b14_0.conda",
+  "md5": "7048368972da57fe279608c4f21950ac",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/openssl-3.5.7-hbb43b14_0.conda",
+  "sha256": "e7ab91ad870e305f8bd926e6a9298096cb1e920cedb48d720b8d4f9580b6291a",
+  "arch": "x86_64",
+  "platform": "win32",
+  "depends": [
+    "ca-certificates",
+    "ucrt >=10.0.20348.0",
+    "vc >=14.3,<15",
+    "vc14_runtime >=14.44.35208"
+  ],
+  "constrains": [],
+  "license": "Apache-2.0",
+  "license_family": "Apache",
+  "timestamp": 1781036764000,
+  "size": 9374085
+}

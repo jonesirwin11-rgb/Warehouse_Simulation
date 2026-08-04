@@ -1,0 +1,74 @@
+# This file created by conda-build 26.1.0
+# meta.yaml template originally from:
+# C:\Users\task_177254811485296\xz-feedstock\recipe, last modified Tue Mar  3 14:32:07 2026
+# ------------------------------------------------
+
+package:
+  name: xz
+  version: 5.8.2
+source:
+  url: https://github.com/tukaani-project/xz/releases/download/v5.8.2/xz-5.8.2.tar.gz
+  sha256: ce09c50a5962786b83e5da389c90dd2c15ecd0980a258dd01f70f9e7ce58a8f1
+build:
+  number: '0'
+  run_exports:
+    - xz >=5.8.2,<6.0a0
+  string: h53af0af_0
+requirements:
+  build:
+    - cmake-no-system 3.25.3 h6c2663c_0
+    - ninja-base 1.13.1 h512dff2_0
+    - ucrt 10.0.22621.0 haa95532_0
+    - vc14_runtime 14.44.35208 h4927774_10
+    - vs2015_runtime 14.44.35208 ha6b5a95_10
+    - vs2022_win-64 19.44.35207 hc920ad0_10
+    - vs_win-64 2022.14 hc920ad0_10
+    - vswhere 3.1.7 haa95532_0
+  host:
+    - ucrt 10.0.22621.0 haa95532_0
+    - vc 14.3 h2df5915_10
+    - vc14_runtime 14.44.35208 h4927774_10
+  run:
+    - ucrt >=10.0.20348.0
+    - vc >=14.3,<15
+    - vc14_runtime >=14.44.35208
+test:
+  requires: null
+  commands:
+    - xz.exe --help
+    - if not exist %PREFIX%\\Library\\bin\\liblzma.dll exit 1
+    - if exist %PREFIX%\\Library\\lib\\lzma_static.lib exit 1
+    - if not exist %PREFIX%\\Library\\lib\\pkgconfig\\liblzma.pc exit 1
+    - if not exist %PREFIX%\\Library\\include\\lzma.h exit 1
+    - if not exist %PREFIX%\\Library\\bin\\xz.exe exit 1
+    - if exist %PREFIX%\\lib exit 1
+about:
+  home: https://tukaani.org/xz/
+  license: LGPL-2.1-or-later and GPL-2.0-or-later and 0BSD
+  license_file: COPYING
+  license_family: GPL2
+  summary: Data compression software with high compression ratio
+  description: 'XZ Utils is free general-purpose data compression software with a
+    high
+
+    compression ratio. XZ Utils were written for POSIX-like systems, but also
+
+    work on some not-so-POSIX systems.
+
+    '
+  doc_url: https://tukaani.org/xz/#_documentation
+  dev_url: https://github.com/tukaani-project/xz
+extra:
+  recipe-maintainers:
+    - mingwandroid
+    - msarahan
+    - nehaljwani
+    - ocefpaf
+    - scopatz
+  final: true
+  copy_test_source_files: true
+  remote_url: https://github.com/AnacondaRecipes/xz-feedstock
+  sha: 4783e2f43c7a92fb112ceb569d162fa290780d80
+  task_id: Yhgp_FIJQuO0gYlavhMqeg
+  task_run_id: '0'
+  pbp_graph_uuid: 59a56d01-5092-4d3b-b4dd-0a1f17128357

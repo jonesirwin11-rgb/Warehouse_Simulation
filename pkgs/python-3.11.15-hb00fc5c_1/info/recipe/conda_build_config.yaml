@@ -1,0 +1,39 @@
+bzip2: '1'
+c_compiler: vs2022
+channel_targets: defaults
+cpu_optimization_target: nocona
+cran_mirror: https://cran.r-project.org
+cxx_compiler: vs2022
+expat: '2'
+extend_keys:
+- ignore_build_only_deps
+- ignore_version
+- extend_keys
+- pin_run_as_build
+fortran_compiler: gfortran
+ignore_build_only_deps:
+- python
+- numpy
+libffi: '3.4'
+lua: '5'
+nss: '3'
+numpy: '1.21'
+openssl: '3'
+perl: 5.26.2
+pin_run_as_build:
+  python:
+    max_pin: x.x
+    min_pin: x.x
+  r-base:
+    max_pin: x.x
+    min_pin: x.x
+platform: win-64
+python: '3.11'
+python_impl: cpython
+r_base: '3.4'
+sqlite: '3'
+target_platform: win-64
+tk: '8.6'
+vc: '14'
+xz: '5'
+zlib: '1'

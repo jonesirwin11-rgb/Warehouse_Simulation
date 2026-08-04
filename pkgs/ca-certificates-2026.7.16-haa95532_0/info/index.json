@@ -1,0 +1,13 @@
+{
+  "arch": "x86_64",
+  "build": "haa95532_0",
+  "build_number": 0,
+  "depends": [],
+  "license": "MPL-2.0",
+  "license_family": "Other",
+  "name": "ca-certificates",
+  "platform": "win",
+  "subdir": "win-64",
+  "timestamp": 1784537193585,
+  "version": "2026.7.16"
+}

@@ -1,0 +1,15 @@
+{
+  "arch": "x86_64",
+  "build": "h2df5915_12",
+  "build_number": 12,
+  "depends": [
+    "vc14_runtime >=14.42.34433"
+  ],
+  "license": "BSD-3-Clause",
+  "license_family": "BSD",
+  "name": "vc",
+  "platform": "win",
+  "subdir": "win-64",
+  "timestamp": 1779209283775,
+  "version": "14.3"
+}

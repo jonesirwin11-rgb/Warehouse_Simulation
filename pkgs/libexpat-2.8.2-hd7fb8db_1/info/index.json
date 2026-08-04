@@ -1,0 +1,20 @@
+{
+  "arch": "x86_64",
+  "build": "hd7fb8db_1",
+  "build_number": 1,
+  "constrains": [
+    "expat 2.8.2.*"
+  ],
+  "depends": [
+    "ucrt >=10.0.20348.0",
+    "vc >=14.3,<15",
+    "vc14_runtime >=14.44.35208"
+  ],
+  "license": "MIT",
+  "license_family": "MIT",
+  "name": "libexpat",
+  "platform": "win",
+  "subdir": "win-64",
+  "timestamp": 1782817596711,
+  "version": "2.8.2"
+}

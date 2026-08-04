@@ -1,0 +1,97 @@
+{
+  "paths": [
+    {
+      "_path": "Library/include/zconf.h",
+      "path_type": "hardlink",
+      "sha256": "d5114318b214981894ac428cd167651185bb6ebe1012a448ec7ea057b0c1aac9",
+      "size_in_bytes": 17671
+    },
+    {
+      "_path": "Library/include/zlib.h",
+      "path_type": "hardlink",
+      "sha256": "818667d6ab6a37fe7469cb06a7f0cb2c2cb2f2c948a03e5accf1a4a74bf3020a",
+      "size_in_bytes": 103848
+    },
+    {
+      "_path": "Library/lib/pkgconfig/zlib.pc",
+      "file_mode": "text",
+      "path_type": "hardlink",
+      "prefix_placeholder": "C:/Users/task_178096273929605/croot/zlib-split_1780962986462/_h_env",
+      "sha256": "9fb5f264a472099544c9adeaccb7ab3ae92278c0d2d86798e75f01faf2b9a1b6",
+      "size_in_bytes": 431
+    },
+    {
+      "_path": "Library/lib/z.lib",
+      "path_type": "hardlink",
+      "sha256": "26e709dcda70966323430780ff39c981bfc9302a30a949e7c3ad5d18111a99a0",
+      "size_in_bytes": 18550
+    },
+    {
+      "_path": "Library/lib/zdll.lib",
+      "path_type": "hardlink",
+      "sha256": "26e709dcda70966323430780ff39c981bfc9302a30a949e7c3ad5d18111a99a0",
+      "size_in_bytes": 18550
+    },
+    {
+      "_path": "Library/lib/zlib.lib",
+      "path_type": "hardlink",
+      "sha256": "26e709dcda70966323430780ff39c981bfc9302a30a949e7c3ad5d18111a99a0",
+      "size_in_bytes": 18550
+    },
+    {
+      "_path": "Library/lib/zlibstatic.lib",
+      "path_type": "hardlink",
+      "sha256": "37f5045a460eff78d04e9e457c85e6c46945c27e6c04060475eff81c5584e4a1",
+      "size_in_bytes": 200112
+    },
+    {
+      "_path": "Library/share/doc/zlib/zlib/LICENSE",
+      "path_type": "hardlink",
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2",
+      "size_in_bytes": 1002
+    },
+    {
+      "_path": "Library/share/doc/zlib/zlib/algorithm.txt",
+      "path_type": "hardlink",
+      "sha256": "3b29f6d9dd223a02ec9fd155ee9b6d01e7f6f4b25e84b19988211fca035bfaca",
+      "size_in_bytes": 9345
+    },
+    {
+      "_path": "Library/share/doc/zlib/zlib/crc-doc.1.0.pdf",
+      "path_type": "hardlink",
+      "sha256": "064f9252d6e2e15ea56c2bd18e160e5c9c84bcd137c11a7af497aaa511ace998",
+      "size_in_bytes": 776142
+    },
+    {
+      "_path": "Library/share/doc/zlib/zlib/rfc1950.txt",
+      "path_type": "hardlink",
+      "sha256": "8f0475a5c984657bf26277f73df9456c9b97f175084f0c1748f1eb1f0b9b10b9",
+      "size_in_bytes": 20502
+    },
+    {
+      "_path": "Library/share/doc/zlib/zlib/rfc1951.txt",
+      "path_type": "hardlink",
+      "sha256": "5ebf4b5b7fe1c3a0c0ab9aa3ac8c0f3853a7dc484905e76e03b0b0f301350009",
+      "size_in_bytes": 36944
+    },
+    {
+      "_path": "Library/share/doc/zlib/zlib/rfc1952.txt",
+      "path_type": "hardlink",
+      "sha256": "164ef0897b4cbec63abf1b57f069f3599bd0fb7c72c2a4dee21bd7e03ec9af67",
+      "size_in_bytes": 25037
+    },
+    {
+      "_path": "Library/share/doc/zlib/zlib/txtvsbin.txt",
+      "path_type": "hardlink",
+      "sha256": "d1549fb75137f03102798f70fd34ff76285e717ddd520dd82274c1c0510eacf0",
+      "size_in_bytes": 5193
+    },
+    {
+      "_path": "Library/share/man/man3/zlib.3",
+      "path_type": "hardlink",
+      "sha256": "5eebcb61a9c1ef91ff6c8e6d37b32554f5eefff825b190b1b5e5982f35d87534",
+      "size_in_bytes": 4482
+    }
+  ],
+  "paths_version": 1
+}

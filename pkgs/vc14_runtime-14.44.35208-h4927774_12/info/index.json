@@ -1,0 +1,18 @@
+{
+  "arch": "x86_64",
+  "build": "h4927774_12",
+  "build_number": 12,
+  "constrains": [
+    "vs2015_runtime 14.44.35208.* *_12"
+  ],
+  "depends": [
+    "ucrt >=10.0.20348.0"
+  ],
+  "license": "LicenseRef-MicrosoftVisualCpp2015-2022Runtime",
+  "license_family": "Proprietary",
+  "name": "vc14_runtime",
+  "platform": "win",
+  "subdir": "win-64",
+  "timestamp": 1779209267029,
+  "version": "14.44.35208"
+}

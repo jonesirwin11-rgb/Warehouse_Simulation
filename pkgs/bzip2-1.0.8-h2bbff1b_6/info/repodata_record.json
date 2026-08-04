@@ -1,0 +1,23 @@
+{
+  "name": "bzip2",
+  "version": "1.0.8",
+  "build": "h2bbff1b_6",
+  "build_number": 6,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "subdir": "win-64",
+  "fn": "bzip2-1.0.8-h2bbff1b_6.conda",
+  "md5": "33e784123d565c38e68945f07b461282",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/bzip2-1.0.8-h2bbff1b_6.conda",
+  "sha256": "4e30c9bfd4501555b0859c863e95ea044290babf3bf190b9d4fb38b06cf15c3c",
+  "arch": "x86_64",
+  "platform": "win32",
+  "depends": [
+    "vc >=14.1,<15.0a0",
+    "vs2015_runtime >=14.16.27012,<15.0a0"
+  ],
+  "constrains": [],
+  "license": "bzip2-1.0.8",
+  "license_family": "BSD",
+  "timestamp": 1714511182000,
+  "size": 91870
+}

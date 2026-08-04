@@ -1,0 +1,55 @@
+# This file created by conda-build 25.5.0
+# meta.yaml template originally from:
+# C:\b\abs_8835rn45id\clone\recipe, last modified Thu Jul 10 15:32:43 2025
+# ------------------------------------------------
+
+package:
+  name: ucrt
+  version: 10.0.22621.0
+source:
+  url: https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/22621.1.220506-1250.ni_release_WindowsSDK.iso
+  sha256: 0412fc77e364226c9395e3188a2d0ac5888317fecfba7bc2dbe003c2ddb5b3d3
+build:
+  number: '0'
+  string: haa95532_0
+requirements:
+  build:
+    - msys2-bash 5.2.032 1000
+    - msys2-filesystem 2023.02.07 2000
+    - msys2-gcc-libs 13.3.0 1000
+    - msys2-libiconv 1.17 1000
+    - msys2-libintl 0.22.4 1000
+    - msys2-msys-mutex 1.0 msys2
+    - msys2-msys2-runtime 3.5.4 1000
+    - msys2-p7zip 17.05 2000
+    - msys2-zlib 1.3.1 1000
+  host: []
+  run: []
+  run_constrained:
+    - vs2015_runtime >=14.29.30037
+test:
+  commands:
+    - if not exist %PREFIX%\\ucrtbase.dll exit 1
+    - if not exist %LIBRARY_PREFIX%\\bin\\ucrtbase.dll exit 1
+about:
+  home: https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/
+  license: LicenseRef-MicrosoftWindowsSDK10
+  license_file: LICENSE.txt
+  summary: Redistributable files for Windows SDK. This is only needed Windows <10
+  description: The Windows SDK provides the latest headers, libraries, metadata, and
+    tools for building Windows applications. Use this SDK to build Universal Windows
+    Platform (UWP) and Win32 applications for Windows 11, version 22H2 and previous
+    Windows releases.
+  dev_url: https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/index-legacy
+  doc_url: https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/#release-notes-and-known-issues
+extra:
+  skip-lints:
+    - missing_license_family
+  recipe-maintainers:
+    - isuruf
+    - xhochy
+  final: true
+  copy_test_source_files: true
+  sha: 21dab538ca8796fa3c1376a712689f0ab52ccdaf
+  remote_url: git@github.com:AnacondaRecipes/ucrt-feedstock.git
+  flow_run_id: 885991ec-fe93-482a-8658-f7e8326d7ff9

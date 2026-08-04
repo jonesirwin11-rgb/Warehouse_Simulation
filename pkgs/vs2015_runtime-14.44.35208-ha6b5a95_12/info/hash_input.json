@@ -1,0 +1,6 @@
+{
+  "channel_targets": "defaults",
+  "target_platform": "win-64",
+  "runtime_version": "14.44.35208",
+  "cross_target_platform": "win-64"
+}

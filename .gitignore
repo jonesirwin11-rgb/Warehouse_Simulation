@@ -1,0 +1,20 @@
+# Ignore virtual environments
+warehouse_env/
+venv/
+
+# Ignore large video files and images
+*.mp4
+*.avi
+*.jpg
+*.png
+
+# Ignore YOLO weights and model runs
+*.pt
+runs/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore generated reports so you don't leak customer data
+wms_session_report.csv

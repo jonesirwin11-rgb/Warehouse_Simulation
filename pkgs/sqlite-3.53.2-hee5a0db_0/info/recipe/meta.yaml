@@ -1,0 +1,73 @@
+# This file created by conda-build 26.3.0
+# meta.yaml template originally from:
+# C:\Users\task_178118657445404\sqlite-feedstock\recipe, last modified Thu Jun 11 14:03:22 2026
+# ------------------------------------------------
+
+package:
+  name: sqlite
+  version: 3.53.2
+source:
+  url: https://www.sqlite.org/2026/sqlite-autoconf-3530200.tar.gz
+  sha256: 588ad51949419a56ebe81fe56193d510c559eb94c9a57748387860b5d3069316
+  patches:
+    - expose_symbols.patch
+build:
+  number: '0'
+  string: hee5a0db_0
+  run_exports:
+    - sqlite >=3.53.2,<4.0a0
+requirements:
+  build:
+    - vs2022_win-64 19.44.35207 hc920ad0_12
+    - vs_win-64 2022.14 hc920ad0_12
+    - vswhere 3.1.7 haa95532_0
+  host:
+    - ucrt 10.0.22621.0 haa95532_0
+    - vc 14.3 h2df5915_12
+    - vc14_runtime 14.44.35208 h4927774_12
+  run:
+    - ucrt >=10.0.20348.0
+    - vc >=14.3,<15
+    - vc14_runtime >=14.44.35208
+test:
+  requires:
+    - python
+  commands:
+    - sqlite3 --version
+    - python -c "import sqlite3; print(sqlite3.sqlite_version)"
+    - if not exist %PREFIX%\\Library\bin\sqlite3.exe exit 1
+    - if not exist %PREFIX%\\Library\bin\sqlite3.dll exit 1
+    - if not exist %PREFIX%\\Library\lib\sqlite3.lib exit 1
+    - if not exist %PREFIX%\\Library\include\sqlite3.h exit 1
+    - if not exist %PREFIX%\\Library\include\sqlite3ext.h exit 1
+about:
+  home: https://www.sqlite.org
+  license: blessing
+  license_file: LICENSE.md
+  license_family: Other
+  summary: Implements a self-contained, zero-configuration, SQL database engine
+  description: 'SQLite is a self-contained, high-reliability, embedded, full-featured,
+
+    public-domain, SQL database engine. It is the most used database engine
+
+    in the world.
+
+    '
+  doc_url: https://www.sqlite.org/docs.html
+  dev_url: https://sqlite.org/src/dir?ci=trunk
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - jjhelmus
+    - mingwandroid
+    - msarahan
+    - ocefpaf
+    - snorfalorpagus
+    - xylar
+  final: true
+  copy_test_source_files: true
+  remote_url: https://github.com/AnacondaRecipes/sqlite-feedstock
+  sha: 5237e24164d64bd3ac4c038f6bea877e013632ff
+  task_id: O6KGNKjSRsSdv9gWxoJupA
+  task_run_id: '0'
+  pbp_graph_uuid: 5bab014d-ed3c-447a-8d52-cd280812a36a

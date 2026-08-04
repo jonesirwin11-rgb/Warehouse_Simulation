@@ -1,0 +1,68 @@
+# This file created by conda-build 24.3.0
+# meta.yaml template originally from:
+# C:\b\abs_45obg32lw8\clone\recipe, last modified Tue Apr 30 22:04:44 2024
+# ------------------------------------------------
+
+package:
+  name: bzip2
+  version: 1.0.8
+source:
+  patches:
+    - build_dll.patch
+  sha256: ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269
+  url: https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
+build:
+  number: '6'
+  run_exports:
+    - bzip2 >=1.0.8,<2.0a0
+  string: h2bbff1b_6
+requirements:
+  build:
+    - m2-msys2-runtime 2.5.0.17080.65c939c 3
+    - m2-patch 2.7.5 2
+    - msys2-conda-epoch 20160418 1
+    - vs2017_win-64 19.16.27032.1 hb4161e2_3
+    - vswhere 2.8.4 haa95532_0
+  host:
+    - vc 14.2 h21ff451_1
+    - vs2015_runtime 14.27.29016 h5e58377_2
+  run:
+    - vc >=14.1,<15.0a0
+    - vs2015_runtime >=14.16.27012,<15.0a0
+test:
+  commands:
+    - bzip2 --help
+  files:
+    - bz2.c
+  requires:
+    - vs2017_win-64
+about:
+  description: 'Bzip2 is a freely available high-quality data compressor. It typically
+
+    compresses files to within 10% to 15% of the best available techniques,
+
+    whilst being around twice as fast at compression and six times faster
+
+    at decompression.
+
+    '
+  dev_url: https://sourceware.org/git/?p=bzip2.git
+  doc_url: https://sourceware.org/bzip2/docs.html
+  home: https://sourceware.org/bzip2/
+  license: bzip2-1.0.8
+  license_family: BSD
+  license_file: LICENSE
+  summary: high-quality data compressor
+extra:
+  copy_test_source_files: true
+  final: true
+  flow_run_id: 45c38ff6-e2ad-4e53-a480-cf130f1f4875
+  recipe-maintainers:
+    - jakirkham
+    - jjhelmus
+    - jlanga
+    - mingwandroid
+    - msarahan
+    - pelson
+  remote_url: git@github.com:AnacondaRecipes/bzip2-feedstock.git
+  sha: de4f0e44ad8e6cffffb605bc99e429bcaee425b7

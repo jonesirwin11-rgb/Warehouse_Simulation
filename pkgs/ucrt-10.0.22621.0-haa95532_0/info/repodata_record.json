@@ -1,0 +1,21 @@
+{
+  "name": "ucrt",
+  "version": "10.0.22621.0",
+  "build": "haa95532_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "subdir": "win-64",
+  "fn": "ucrt-10.0.22621.0-haa95532_0.conda",
+  "md5": "15e1b10231d7d236520501fcfb440f31",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/ucrt-10.0.22621.0-haa95532_0.conda",
+  "sha256": "9dfca4fb23f20e62a48b9c52e2fdf4d0d34bb31eb6a930c2195fcd10651b3cc3",
+  "arch": "x86_64",
+  "platform": "win32",
+  "depends": [],
+  "constrains": [
+    "vs2015_runtime >=14.29.30037"
+  ],
+  "license": "LicenseRef-MicrosoftWindowsSDK10",
+  "timestamp": 1752158202000,
+  "size": 634816
+}

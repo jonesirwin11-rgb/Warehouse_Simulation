@@ -1,0 +1,15 @@
+{
+  "arch": "x86_64",
+  "build": "haa95532_0",
+  "build_number": 0,
+  "constrains": [
+    "vs2015_runtime >=14.29.30037"
+  ],
+  "depends": [],
+  "license": "LicenseRef-MicrosoftWindowsSDK10",
+  "name": "ucrt",
+  "platform": "win",
+  "subdir": "win-64",
+  "timestamp": 1752158202557,
+  "version": "10.0.22621.0"
+}

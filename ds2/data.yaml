@@ -1,0 +1,14 @@
+names:
+- '0'
+- box
+- snake-in-cardboard-boxes
+nc: 3
+roboflow:
+  license: CC BY 4.0
+  project: carboard-box
+  url: https://universe.roboflow.com/carboard-box/carboard-box/dataset/4
+  version: 4
+  workspace: carboard-box
+test: ../test/images
+train: ../train/images
+val: ../valid/images

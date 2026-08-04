@@ -1,0 +1,12 @@
+names:
+- Carton
+nc: 1
+roboflow:
+  license: CC BY 4.0
+  project: cardboard-box-detection-rjrm9
+  url: https://universe.roboflow.com/instance-segmentation-zza7a/cardboard-box-detection-rjrm9/dataset/1
+  version: 1
+  workspace: instance-segmentation-zza7a
+test: ../test/images
+train: ../train/images
+val: ../valid/images

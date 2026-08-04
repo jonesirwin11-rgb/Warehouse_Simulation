@@ -1,0 +1,22 @@
+{
+  "name": "setuptools",
+  "version": "83.0.0",
+  "build": "py311haa95532_0",
+  "build_number": 0,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "subdir": "win-64",
+  "fn": "setuptools-83.0.0-py311haa95532_0.conda",
+  "md5": "b0323245dde21df9e22e3e4159ff9948",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/setuptools-83.0.0-py311haa95532_0.conda",
+  "sha256": "ec8abfa2762f1273a68e7b3820bb919373b444450ceff4e931fc7d6928296c3d",
+  "arch": "x86_64",
+  "platform": "win32",
+  "depends": [
+    "python >=3.11,<3.12.0a0"
+  ],
+  "constrains": [],
+  "license": "MIT",
+  "license_family": "MIT",
+  "timestamp": 1784035534000,
+  "size": 1670941
+}

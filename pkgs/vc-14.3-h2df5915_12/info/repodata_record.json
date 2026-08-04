@@ -1,0 +1,22 @@
+{
+  "name": "vc",
+  "version": "14.3",
+  "build": "h2df5915_12",
+  "build_number": 12,
+  "channel": "https://repo.anaconda.com/pkgs/main/win-64",
+  "subdir": "win-64",
+  "fn": "vc-14.3-h2df5915_12.conda",
+  "md5": "6737bfee92a331a876eadd8a2af7bc09",
+  "url": "https://repo.anaconda.com/pkgs/main/win-64/vc-14.3-h2df5915_12.conda",
+  "sha256": "81f68bd3f7e74032547fc3c2b1d7d914b2688cc11f2470625c5c65d49d1474bd",
+  "arch": "x86_64",
+  "platform": "win32",
+  "depends": [
+    "vc14_runtime >=14.42.34433"
+  ],
+  "constrains": [],
+  "license": "BSD-3-Clause",
+  "license_family": "BSD",
+  "timestamp": 1779209283000,
+  "size": 16822
+}

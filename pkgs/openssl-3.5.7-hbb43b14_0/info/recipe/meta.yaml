@@ -1,0 +1,92 @@
+# This file created by conda-build 26.3.0
+# meta.yaml template originally from:
+# C:\Users\task_178103414789582\openssl-feedstock\recipe, last modified Tue Jun  9 19:49:22 2026
+# ------------------------------------------------
+
+package:
+  name: openssl
+  version: 3.5.7
+source:
+  url: https://github.com/openssl/openssl/releases/download/openssl-3.5.7/openssl-3.5.7.tar.gz
+  sha256: a8c0d28a529ca480f9f36cf5792e2cd21984552a3c8e4aa11a24aa31aeac98e8
+build:
+  number: '0'
+  no_link: null
+  detect_binary_files_with_prefix: true
+  run_exports:
+    - openssl >=3.5.7,<4.0a0
+  string: hbb43b14_0
+requirements:
+  build:
+    - nasm 2.16.03 h2f13f5f_0
+    - perl 5.42.2.1 1_h1c6eee0_perl5
+    - ucrt 10.0.22621.0 haa95532_0
+    - vc 14.42 haa95532_5
+    - vc14_runtime 14.44.35208 h4927774_12
+    - vs2015_runtime 14.44.35208 ha6b5a95_12
+    - vs2022_win-64 19.44.35207 hc920ad0_12
+    - vs_win-64 2022.14 hc920ad0_12
+    - vswhere 3.1.7 haa95532_0
+  run:
+    - ca-certificates
+    - ucrt >=10.0.20348.0
+    - vc >=14.3,<15
+    - vc14_runtime >=14.44.35208
+  host:
+    - ucrt 10.0.22621.0 haa95532_0
+    - vc 14.3 h2df5915_12
+    - vc14_runtime 14.44.35208 h4927774_12
+test:
+  requires:
+    - pkg-config
+    - python 3.13.*
+  commands:
+    - copy NUL checksum.txt
+    - openssl sha256 checksum.txt
+    - openssl ecparam -name prime256v1
+    - if "%SSL_CERT_FILE%"=="" exit 1
+    - if not exist "%SSL_CERT_FILE%" exit 1
+    - python -c "import urllib.request; urllib.request.urlopen('https://pypi.org')"
+    - pkg-config --print-errors --exact-version "3.5.7" openssl
+    - if not exist "%LIBRARY_LIB%\libcrypto.lib" exit 1
+    - if not exist "%LIBRARY_LIB%\libssl.lib" exit 1
+    - if not exist "%LIBRARY_LIB%\pkgconfig\libssl.pc" exit 1
+    - if not exist "%LIBRARY_LIB%\pkgconfig\libcrypto.pc" exit 1
+    - if not exist "%LIBRARY_LIB%\pkgconfig\openssl.pc" exit 1
+    - if not exist "%LIBRARY_BIN%\openssl.exe" exit 1
+    - if not exist "%LIBRARY_INC%\openssl" exit 1
+about:
+  home: https://www.openssl.org
+  license_file: LICENSE.txt
+  license: Apache-2.0
+  license_family: Apache
+  summary: OpenSSL is an open-source implementation of the SSL and TLS protocols
+  description: 'OpenSSL is a robust, commercial-grade, full-featured Open Source Toolkit
+
+    for the Transport Layer Security (TLS) protocol formerly known as the
+
+    Secure Sockets Layer (SSL) protocol. The protocol implementation is based
+
+    on a full-strength general purpose cryptographic library, which can also
+
+    be used stand-alone.
+
+    '
+  dev_url: https://github.com/openssl/openssl
+  doc_url: https://docs.openssl.org
+extra:
+  recipe-maintainers:
+    - carlodri
+    - chenghlee
+    - jakirkham
+    - jjhelmus
+    - msarahan
+    - ocefpaf
+    - pelson
+  final: true
+  copy_test_source_files: true
+  remote_url: https://github.com/AnacondaRecipes/openssl-feedstock
+  sha: c4cb5f31a18e65585a9cb46e066bd03839776caf
+  task_id: DrQLQgZ-TKGZtuCkCR9ETQ
+  task_run_id: '0'
+  pbp_graph_uuid: a798667e-cb64-44a3-bf1e-5624e546b9d2

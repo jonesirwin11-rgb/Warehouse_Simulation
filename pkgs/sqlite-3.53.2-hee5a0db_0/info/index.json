@@ -1,0 +1,17 @@
+{
+  "arch": "x86_64",
+  "build": "hee5a0db_0",
+  "build_number": 0,
+  "depends": [
+    "ucrt >=10.0.20348.0",
+    "vc >=14.3,<15",
+    "vc14_runtime >=14.44.35208"
+  ],
+  "license": "blessing",
+  "license_family": "Other",
+  "name": "sqlite",
+  "platform": "win",
+  "subdir": "win-64",
+  "timestamp": 1781186696446,
+  "version": "3.53.2"
+}
