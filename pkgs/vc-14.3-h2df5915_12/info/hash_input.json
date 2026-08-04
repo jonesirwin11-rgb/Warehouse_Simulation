@@ -1,7 +1,0 @@
-{
-  "target_platform": "win-64",
-  "channel_targets": "defaults",
-  "runtime_version": "14.42.34433",
-  "vcver": "14.3",
-  "cross_target_platform": "win-64"
-}

@@ -1,8 +1,0 @@
-{
-  "c_stdlib": "vs",
-  "c_stdlib_version": "2022.14",
-  "sqlite": "3",
-  "c_compiler": "vs2022",
-  "channel_targets": "defaults",
-  "target_platform": "win-64"
-}

@@ -1,9 +1,0 @@
-{
-  "zlib": "1.2",
-  "channel_targets": "defaults",
-  "c_compiler": "vs2019",
-  "target_platform": "win-64",
-  "tk": "8.6",
-  "c_stdlib": "vs",
-  "c_stdlib_version": "2019.11"
-}

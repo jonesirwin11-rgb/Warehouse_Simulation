@@ -1,8 +1,0 @@
-{
-  "c_stdlib": "vs",
-  "cxx_compiler": "vs2022",
-  "target_platform": "win-64",
-  "c_stdlib_version": "2022.14",
-  "channel_targets": "defaults",
-  "c_compiler": "vs2022"
-}

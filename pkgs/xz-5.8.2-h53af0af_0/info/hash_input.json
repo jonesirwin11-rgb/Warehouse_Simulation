@@ -1,9 +1,0 @@
-{
-  "channel_targets": "defaults",
-  "c_stdlib": "vs",
-  "c_compiler": "vs2022",
-  "xz": "5",
-  "vc": "14",
-  "c_stdlib_version": "2022.14",
-  "target_platform": "win-64"
-}

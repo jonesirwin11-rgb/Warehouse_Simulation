@@ -18,3 +18,6 @@ __pycache__/
 
 # Ignore generated reports so you don't leak customer data
 wms_session_report.csv
+
+# Ignore package manager caches
+pkgs/
