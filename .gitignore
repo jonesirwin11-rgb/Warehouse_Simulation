@@ -30,3 +30,8 @@ wms_session_report.csv
 
 # Ignore package manager caches
 pkgs/
+
+# Dashboard - ignore user uploads, generated outputs, and frame thumbnails
+dashboard/uploads/
+dashboard/outputs/
+dashboard/static/*_frame.jpg

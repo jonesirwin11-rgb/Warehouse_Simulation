@@ -8,3 +8,6 @@ supervision
 # Data Manipulation & Reporting
 numpy
 pandas
+
+# Web Dashboard
+flask

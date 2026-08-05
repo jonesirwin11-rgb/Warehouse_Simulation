@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warehouse Vision AI — Dock Analytics Dashboard</title>
+  <meta name="description" content="AI-powered warehouse dock monitoring: upload video, set tripwire, track boxes automatically." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- ─── Ambient BG blobs ─── -->
+  <div class="ambient-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- ─── NAV ─── -->
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+      </div>
+      <span class="brand-text">Warehouse <span class="brand-accent">Vision AI</span></span>
+    </div>
+    <div class="topbar-actions">
+      <div class="status-chip" id="globalStatus">
+        <span class="status-dot"></span>
+        <span class="status-text">Ready</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <main class="main-container">
+
+    <!-- ────────── STEP 1: UPLOAD ────────── -->
+    <section class="step-section" id="step1Section">
+      <div class="step-header">
+        <div class="step-badge">1</div>
+        <div>
+          <h2 class="step-title">Upload Dock Video</h2>
+          <p class="step-desc">Drag &amp; drop or browse for your warehouse footage</p>
+        </div>
+      </div>
+      <div class="card glass-card">
+        <div class="upload-zone" id="uploadZone">
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <p class="upload-main-text">Drop video file here</p>
+          <p class="upload-sub-text">or <label class="upload-browse" for="videoInput">browse files</label></p>
+          <p class="upload-hint">Supports MP4, AVI, MOV — up to 500 MB</p>
+          <input type="file" id="videoInput" accept="video/*" hidden />
+        </div>
+        <!-- Upload progress -->
+        <div class="upload-progress" id="uploadProgress" style="display:none;">
+          <div class="file-info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span id="uploadFileName">video.mp4</span>
+          </div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" id="uploadBar"></div></div>
+          <p class="progress-label" id="uploadLabel">Uploading…</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────── STEP 2: SELECT COORDINATES ────────── -->
+    <section class="step-section disabled" id="step2Section">
+      <div class="step-header">
+        <div class="step-badge">2</div>
+        <div>
+          <h2 class="step-title">Set Tripwire Line</h2>
+          <p class="step-desc">Click two points on the frame to define the counting boundary</p>
+        </div>
+      </div>
+      <div class="card glass-card">
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <canvas id="frameCanvas"></canvas>
+          <div class="canvas-overlay" id="canvasOverlay">
+            <p>Video frame will appear here</p>
+          </div>
+        </div>
+        <div class="coord-bar">
+          <div class="coord-group">
+            <div class="coord-chip" id="coordA">
+              <span class="coord-label">Start</span>
+              <span class="coord-value" id="coordAVal">—</span>
+            </div>
+            <div class="coord-chip" id="coordB">
+              <span class="coord-label">End</span>
+              <span class="coord-value" id="coordBVal">—</span>
+            </div>
+          </div>
+          <div class="coord-actions">
+            <button class="btn btn-ghost" id="resetLineBtn" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              Reset
+            </button>
+            <button class="btn btn-primary" id="processBtn" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Process Video
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────── STEP 3: PROCESSING ────────── -->
+    <section class="step-section disabled" id="step3Section">
+      <div class="step-header">
+        <div class="step-badge">3</div>
+        <div>
+          <h2 class="step-title">Processing &amp; Results</h2>
+          <p class="step-desc">AI is analysing your video — this may take a few minutes</p>
+        </div>
+      </div>
+      <div class="card glass-card">
+        <!-- Processing -->
+        <div id="processingView">
+          <div class="processing-animation">
+            <div class="spinner"></div>
+            <p class="processing-msg" id="processingMsg">Initialising model…</p>
+          </div>
+          <div class="progress-bar-track large"><div class="progress-bar-fill accent" id="processBar"></div></div>
+          <p class="progress-label center" id="processPercent">0 %</p>
+        </div>
+        <!-- Results -->
+        <div id="resultsView" style="display:none;">
+          <div class="results-grid">
+            <div class="stat-card stat-green">
+              <p class="stat-number" id="statLoaded">0</p>
+              <p class="stat-label">Boxes Loaded</p>
+            </div>
+            <div class="stat-card stat-red">
+              <p class="stat-number" id="statUnloaded">0</p>
+              <p class="stat-label">Boxes Unloaded</p>
+            </div>
+            <div class="stat-card stat-blue">
+              <p class="stat-number" id="statLoadSessions">0</p>
+              <p class="stat-label">Load Sessions</p>
+            </div>
+            <div class="stat-card stat-purple">
+              <p class="stat-number" id="statUnloadSessions">0</p>
+              <p class="stat-label">Unload Sessions</p>
+            </div>
+          </div>
+
+          <div class="video-result-wrapper">
+            <h3 class="section-subtitle">Annotated Output</h3>
+            <video id="resultVideo" controls class="result-video"></video>
+          </div>
+
+          <div class="download-bar">
+            <a class="btn btn-primary" id="downloadVideoBtn" download>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Video
+            </a>
+            <a class="btn btn-ghost" id="downloadReportBtn" download>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              Download Report
+            </a>
+            <button class="btn btn-ghost" id="newSessionBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Session
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── TOAST ─── -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
