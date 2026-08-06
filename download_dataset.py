@@ -1,7 +1,14 @@
 # download_datasets.py
+import os
+from dotenv import load_dotenv
 from roboflow import Roboflow
 
-rf = Roboflow(api_key="xEH0X1Uno5kFHBaHZkAD")
+# Load environment variables from the .env file
+load_dotenv()
+
+# Securely fetch the API key
+API_KEY = os.getenv("ROBOFLOW_API_KEY")
+rf = Roboflow(api_key=API_KEY)
 
 # Source 1: ~8,355 images
 rf.workspace("instance-segmentation-zza7a") \
