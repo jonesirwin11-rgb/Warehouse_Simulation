@@ -11,3 +11,5 @@ pandas
 
 # Web Dashboard
 flask
+requests
+flask-cors

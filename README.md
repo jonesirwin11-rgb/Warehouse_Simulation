@@ -1,79 +1,90 @@
-Here is the properly formatted and structured Markdown version of your README file.
-
-Markdown
 # Vision AI Warehouse Management System (WMS) 📦
 
-An automated Vision AI pipeline that analyzes static warehouse dock CCTV footage to track inventory movement, count boxes, and calculate the turnaround time (TAT) of loading and unloading operations.
+An automated, event-driven Vision AI pipeline that analyzes static warehouse dock CCTV footage to track inventory movement, count boxes, and calculate the turnaround time (TAT) of loading and unloading operations.
 
-This Proof of Concept (POC) acts as a vision-based digital twin module for Industry 4.0 logistics, minimizing manual counting errors and providing automated operational visibility.
+This Proof of Concept (POC) acts as a vision-based digital twin module for Industry 4.0 logistics. It mimics a distributed architecture where edge AI cameras process footage locally and stream lightweight payload events to a central inventory backend.
+
+## 📁 Project Structure
+
+* **`backend/`**: Contains the central Flask server (`app.py`) that acts as the inventory source-of-truth.
+* **`dashboard/`**: Contains a web-based GUI for end-to-end processing demonstrations (uploading videos, visually drawing tripwires).
+* **`demo/`**: Contains standalone scripts (`demo_wms.py`, `get_video_coord.py`) for processing videos in isolation  (PoC).
+* **`edge/`**: Contains the simulated edge node (`edge_node.py` and `box_state_machine.py`) that captures video, runs YOLO + ByteTrack, and pushes events to the backend.
+* **`models/`**: House the YOLOv8 weights (e.g., `best.pt`).
+* **`videos/`**: Directory for test video footage.
+* **`datasets/` & `tools/`**: Utilities and data used for model training and annotations.
 
 ## 🚀 Key Features
 
-* **Custom Object Detection:** Utilizes a fine-tuned YOLOv8s model trained specifically on industrial cardboard cartons (e.g., Bajaj cartons) to operate accurately in high-contrast dock lighting.
-* **Advanced Occlusion Handling:** Implements ByteTrack optimized for dense logistics environments. The tracker maintains object memory (`lost_track_buffer=60`) to preserve box IDs even when workers temporarily block the camera's view.
-* **Directional Counting:** Uses a precise virtual tripwire (`sv.LineZone`) to accurately differentiate between loading (In) and unloading (Out) operations.
-* **Multi-Session TAT Analytics:** Dynamically segments continuous video footage into distinct loading/unloading sessions based on inactivity thresholds, calculating the exact Turnaround Time for each burst of activity.
-* **Automated CSV Reporting:** Automatically generates a `wms_session_report.csv` detailing session IDs, directions, timestamps, and total counts for seamless integration into broader WMS/TMS dashboards.
-
-## 🛠️ Technical Stack
-
-* **Computer Vision:** OpenCV (`cv2`)
-* **Deep Learning / Object Detection:** Ultralytics (YOLOv8)
-* **Object Tracking & Analytics:** Supervision (ByteTrack, LineZone)
-* **Language:** Python 3.x
+* **Event-Driven Edge Architecture:** Video processing happens at the "edge". Nodes only send JSON HTTP payloads (like `TRUCK_EXIT_EVENT`) to the central backend, protecting network bandwidth.
+* **Custom Object Tracking:** Uses a fine-tuned YOLOv8 model for cardboard cartons, paired with conditionally tuned ByteTrack parameters (handling high occlusion for truck views, and low confidence thresholds for distant staging views).
+* **State Machine Hard-Lock:** Implements custom tracking logic to permanently lock box IDs once they cross a tripwire, successfully eliminating duplicate counts when tracker IDs flicker.
+* **Web Dashboard:** A modern UI to upload videos, point-and-click to calibrate tripwires, run the tracking pipeline in the background, and download session TAT reports.
 
 ## ⚙️ Installation & Setup
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/jonesirwin11-rgb/Warehouse_Simulation.git](https://github.com/jonesirwin11-rgb/Warehouse_Simulation.git)
+   git clone https://github.com/jonesirwin11-rgb/Warehouse_Simulation.git
    cd Warehouse_Simulation
-Create and activate a virtual environment (Recommended):
+   ```
 
-Bash
-python3 -m venv warehouse_env
+2. **Create the Conda environment using the provided configuration:**
+   This project uses a standard `environment.yml` to guarantee Python 3.10 and dependency compatibility.
 
-# On Windows:
-warehouse_env\Scripts\activate
+   *Option A (Recommended): Create globally*
+   ```bash
+   conda env create -f environment.yml
+   conda activate warehouse-vision
+   ```
 
-# On WSL/Linux:
-source warehouse_env/bin/activate
-Install the required dependencies:
+   *Option B: Create locally inside the project folder*
+   ```bash
+   conda env create -f environment.yml --prefix .\warehouse_env
+   conda activate .\warehouse_env
+   ```
 
-Bash
-pip install -r requirements.txt
-Note: The proprietary dataset used to train the YOLOv8 model is kept private and is not included in this repository. However, the custom trained weights (best.pt) are provided to test the pipeline.
+*Note: The YOLOv8 model weights should be placed inside the `models/` directory (e.g., `models/best.pt`). Video footage should be placed in `videos/`.*
 
-🖥️ Usage Guide
-1. Configure the Virtual Tripwire
-Because camera angles vary, you must define the X/Y pixel coordinates of the virtual tripwire for your specific video.
+## 🖥️ Usage Guide
 
-Update VIDEO_PATH in the helper script to point to your test video.
+There are three ways to use this POC.
 
-Run the coordinate helper:
+### 1. Web Dashboard (Recommended for demos)
+The dashboard provides a visual interface to try out the tracking logic.
+```bash
+python dashboard/app.py
+```
+* Open `http://localhost:5000` in your browser.
+* Upload a video from the `videos/` folder.
+* Click to draw the entry/exit line and run the pipeline.
 
-Bash
-python get_coords.py
-Click twice on the video frame to draw a vertical line representing the dock threshold.
+### 2. Distributed Architecture (Backend + Edge Nodes)
+Simulate a real-world warehouse by turning on the backend server and running camera nodes.
 
-Copy the outputted sv.Point coordinates and paste them into LINE_START and LINE_END inside demo_wms.py.
+**Start the Backend:**
+```bash
+python backend/app.py
+```
 
-2. Run the Analytics Pipeline
-Run the main pipeline to process the video, track the cartons, and calculate the TAT.
+**Start the Edge Nodes:** (In separate terminals)
+```bash
+# Camera 1: Truck View
+python edge/edge_node.py --camera 1
 
-Bash
-python demo_wms.py
-3. Generate Synthetic Test Data (Optional)
-If you do not have CCTV footage available, you can generate a synthetic sliding-box video to test the tracker and tripwire logic programmatically:
+# Camera 2: Staging Area View
+python edge/edge_node.py --camera 2
+```
+*Press `c` on the camera feed window to live-calibrate the tripwire.*
 
-Bash
-python make_synthetic_video.py
-📊 Outputs & Deliverables
-Running the main pipeline will generate two primary outputs:
+### 3. Standalone Script
+If you want to run the pipeline exactly as it was originally built for a single video.
+1. Get the coordinates: `python demo/get_video_coord.py`
+2. Run the tracker: `python demo/demo_wms.py`
 
-wms_annotated_output.mp4: A rendered video file featuring bounding boxes, unique tracking IDs, the virtual tripwire, and a live Heads-Up Display (HUD) showing current counts and session TAT. (Default codec is H.264/avc1 for high compatibility).
+## 📊 Outputs & Deliverables
+* **`wms_annotated_output.mp4`**: Rendered tracker video with bounding boxes and HUD stats.
+* **`wms_session_report.csv`**: Automated TAT analytics of loading/unloading sessions.
 
-wms_session_report.csv: A structured data report summarizing all detected logistics sessions, formatted for easy stakeholder review.
-
-📝 License
+## 📝 License
 This project is created as an evaluation Proof of Concept (POC).

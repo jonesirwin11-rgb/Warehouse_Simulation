@@ -3,22 +3,26 @@ warehouse_env/
 venv/
 .conda_envs_dir_test
 
-# Ignore Datasets
-dataset/
-ds1/
-ds2/
-ds3/
+# Ignore environment variables
+.env
+    
+# Ignore structured data folders
+datasets/
+data/
 
 # Ignore large video and audio files
+videos/
 *.mp4
 *.m4a
 *.avi
 *.jpg
 *.png
+*.jpeg
 
 # Ignore YOLO weights and model runs (BUT ALLOW best.pt)
+models/*.pt
+!models/best.pt
 *.pt
-!best.pt
 runs/
 
 # Ignore Python cache
@@ -27,6 +31,7 @@ __pycache__/
 
 # Ignore generated reports so you don't leak customer data
 wms_session_report.csv
+*.csv
 
 # Ignore package manager caches
 pkgs/
