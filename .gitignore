@@ -29,12 +29,21 @@ runs/
 __pycache__/
 *.pyc
 
+# Ignore testing caches
+.pytest_cache/
+
 # Ignore generated reports so you don't leak customer data
 wms_session_report.csv
 *.csv
 
 # Ignore package manager caches
 pkgs/
+
+# Ignore databases
+*.db
+
+# Ignore IDEs and configs
+.vscode/
 
 # Dashboard - ignore user uploads, generated outputs, and frame thumbnails
 dashboard/uploads/

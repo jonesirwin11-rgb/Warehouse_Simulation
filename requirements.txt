@@ -9,7 +9,9 @@ supervision
 numpy
 pandas
 
-# Web Dashboard
+# Web Dashboard & Backend
 flask
 requests
 flask-cors
+imageio-ffmpeg
+werkzeug

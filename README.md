@@ -6,10 +6,10 @@ This Proof of Concept (POC) acts as a vision-based digital twin module for Indus
 
 ## 📁 Project Structure
 
-* **`backend/`**: Contains the central Flask server (`app.py`) that acts as the inventory source-of-truth.
-* **`dashboard/`**: Contains a web-based GUI for end-to-end processing demonstrations (uploading videos, visually drawing tripwires).
-* **`demo/`**: Contains standalone scripts (`demo_wms.py`, `get_video_coord.py`) for processing videos in isolation  (PoC).
-* **`edge/`**: Contains the simulated edge node (`edge_node.py` and `box_state_machine.py`) that captures video, runs YOLO + ByteTrack, and pushes events to the backend.
+* **`backend/`**: Contains the central Flask server (`app.py`) with an SQLite database (`inventory_state.db`) acting as the inventory source-of-truth.
+* **`dashboard/`**: Contains a web-based GUI for end-to-end processing demonstrations (uploading videos, visually drawing tripwires). Features a modern light theme and Chart.js trend analysis.
+* **`demo/`**: Contains standalone scripts (`demo_wms.py`, `get_video_coord.py`) for processing videos in isolation (PoC).
+* **`edge/`**: Contains the simulated edge node (`edge_node.py` and `box_state_machine.py`) that captures video, runs YOLO + tracker, and pushes events to the backend.
 * **`models/`**: House the YOLOv8 weights (e.g., `best.pt`).
 * **`videos/`**: Directory for test video footage.
 * **`datasets/` & `tools/`**: Utilities and data used for model training and annotations.
@@ -18,8 +18,9 @@ This Proof of Concept (POC) acts as a vision-based digital twin module for Indus
 
 * **Event-Driven Edge Architecture:** Video processing happens at the "edge". Nodes only send JSON HTTP payloads (like `TRUCK_EXIT_EVENT`) to the central backend, protecting network bandwidth.
 * **Custom Object Tracking:** Uses a fine-tuned YOLOv8 model for cardboard cartons, paired with conditionally tuned ByteTrack parameters (handling high occlusion for truck views, and low confidence thresholds for distant staging views).
-* **State Machine Hard-Lock:** Implements custom tracking logic to permanently lock box IDs once they cross a tripwire, successfully eliminating duplicate counts when tracker IDs flicker.
-* **Web Dashboard:** A modern UI to upload videos, point-and-click to calibrate tripwires, run the tracking pipeline in the background, and download session TAT reports.
+* **State Machine Hard-Lock & Static Snapshot Engine:** Implements custom tracking logic to permanently lock box IDs once they cross a tripwire. Uses Settle-and-Snapshot for staging areas to reliably count stationary boxes.
+* **Modern Web Dashboard:** A beautiful, responsive light-themed UI to upload videos, point-and-click to calibrate tripwires, run the tracking pipeline in the background. Features real-time trend analysis using Chart.js to visualize throughput and download session TAT reports.
+* **Browser Transcode Compliance:** Automatic backend pipeline to force `imageio_ffmpeg` conversion ensuring annotated results play smoothly on the dashboard.
 
 ## ⚙️ Installation & Setup
 
@@ -44,6 +45,11 @@ This Proof of Concept (POC) acts as a vision-based digital twin module for Indus
    conda activate .\warehouse_env
    ```
 
+   *Alternatively, using pip:*
+   ```bash
+   pip install -r requirements.txt
+   ```
+
 *Note: The YOLOv8 model weights should be placed inside the `models/` directory (e.g., `models/best.pt`). Video footage should be placed in `videos/`.*
 
 ## 🖥️ Usage Guide
@@ -53,11 +59,12 @@ There are three ways to use this POC.
 ### 1. Web Dashboard (Recommended for demos)
 The dashboard provides a visual interface to try out the tracking logic.
 ```bash
-python dashboard/app.py
+python backend/app.py
 ```
 * Open `http://localhost:5000` in your browser.
 * Upload a video from the `videos/` folder.
 * Click to draw the entry/exit line and run the pipeline.
+* Visualize the trend analysis with operational metrics.
 
 ### 2. Distributed Architecture (Backend + Edge Nodes)
 Simulate a real-world warehouse by turning on the backend server and running camera nodes.
@@ -85,6 +92,7 @@ If you want to run the pipeline exactly as it was originally built for a single 
 ## 📊 Outputs & Deliverables
 * **`wms_annotated_output.mp4`**: Rendered tracker video with bounding boxes and HUD stats.
 * **`wms_session_report.csv`**: Automated TAT analytics of loading/unloading sessions.
+* **SQLite Persistence**: Cross-session persistent inventory state tracking via `inventory_state.db`.
 
 ## 📝 License
 This project is created as an evaluation Proof of Concept (POC).
