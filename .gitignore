@@ -29,8 +29,10 @@ runs/
 __pycache__/
 *.pyc
 
-# Ignore testing caches
+# Ignore testing caches and coverage reports
 .pytest_cache/
+.coverage
+htmlcov/
 
 # Ignore generated reports so you don't leak customer data
 wms_session_report.csv

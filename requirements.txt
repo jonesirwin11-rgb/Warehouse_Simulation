@@ -15,3 +15,8 @@ requests
 flask-cors
 imageio-ffmpeg
 werkzeug
+
+# Testing & Tools
+pytest
+roboflow
+python-dotenv

@@ -5,14 +5,14 @@
 /* ── Reset & Tokens ─────────────────────────────────────────────────── */
 :root {
   /* Palette */
-  --bg:        #0c0e14;
-  --surface:   #14161e;
-  --surface-2: #1a1d28;
-  --border:    rgba(255,255,255,.06);
-  --border-hl: rgba(255,255,255,.12);
-  --text:      #e8eaf0;
-  --text-dim:  #8b8fa4;
-  --text-muted:#5a5e72;
+  --bg:        #f4f7fb;
+  --surface:   #e4e9f2;
+  --surface-2: #d5dae8;
+  --border:    rgba(0,0,0,.1);
+  --border-hl: rgba(0,0,0,.18);
+  --text:      #12141c;
+  --text-dim:  #4b5168;
+  --text-muted:#6b728e;
 
   --accent:    #6c5ce7;
   --accent-l:  #a29bfe;
@@ -56,8 +56,8 @@ body {
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: .18;
+  filter: blur(90px);
+  opacity: .35;
   animation: drift 20s ease-in-out infinite;
 }
 .blob-1 { width:600px; height:600px; background:var(--accent); top:-10%; left:-5%;  animation-delay:0s; }
@@ -75,7 +75,7 @@ body {
   position: sticky; top:0; z-index:100;
   display: flex; align-items:center; justify-content:space-between;
   padding: 16px 32px;
-  background: rgba(12,14,20,.7);
+  background: rgba(244,247,251,.85);
   backdrop-filter: blur(18px) saturate(1.4);
   border-bottom: 1px solid var(--border);
 }
@@ -154,9 +154,10 @@ body {
   overflow: hidden;
 }
 .glass-card {
-  background: rgba(20,22,30,.65);
+  background: rgba(255,255,255,.75);
   border: 1px solid var(--border);
   backdrop-filter: blur(14px);
+  box-shadow: 0 10px 40px rgba(0,0,0,.03);
 }
 
 /* ── Upload Zone ──────────────────────────────────────────────────── */
@@ -220,7 +221,7 @@ body {
 .canvas-wrapper {
   position: relative;
   width: 100%;
-  background: #0a0c12;
+  background: #e4e9f2;
   border-bottom: 1px solid var(--border);
   display:flex; justify-content:center; align-items:center;
   min-height: 320px;

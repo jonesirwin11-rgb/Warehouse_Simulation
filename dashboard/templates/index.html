@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .audit-result-card {
         padding: 24px;
@@ -45,16 +46,15 @@
   </div>
 
   <nav class="topbar">
-    <div class="topbar-brand">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-          <line x1="12" y1="22.08" x2="12" y2="12"/>
-        </svg>
+    <header class="header" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 15px;">
+          <div class="logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
+          <h1>WMS Edge Hub</h1>
       </div>
-      <span class="brand-text">Warehouse <span class="brand-accent">Live Analytics</span></span>
-    </div>
+      <button class="btn btn-primary" id="btnResetData" style="background: var(--red-dim); border: 1px solid var(--red); color: var(--red); box-shadow: none;">Clear Old Records</button>
+    </header>
     <div class="topbar-actions">
       <div class="status-chip running" id="globalStatus">
         <span class="status-dot"></span>
@@ -65,61 +65,85 @@
 
   <main class="main-container">
     
-    <section class="step-section">
+    <section id="parallel-cameras-section" style="margin-top: 40px;">
       <div class="step-header">
         <div>
-          <h2 class="step-title">Live Inventory</h2>
-          <p class="step-desc">Monitoring from edge vision nodes</p>
+          <h2 class="step-title">Camera Feed Analysis</h2>
+          <p class="step-desc">Independently upload and process footage for Front and Side views</p>
         </div>
       </div>
       
-      <div class="card glass-card">
-        <div class="results-grid" style="grid-template-columns: 1fr;">
-            <div class="stat-card stat-blue">
-                <p class="stat-number" id="liveInventoryCount">0</p>
-                <p class="stat-label">Live Staged Boxes</p>
-            </div>
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+        
+        <!-- Camera 1: Front / Truck View -->
+        <div class="card glass-card" style="flex: 1; min-width: 45%;">
+          <h3 style="margin-bottom: 15px; color: var(--primary);">Front View Camera (Truck)</h3>
+          
+          <form id="uploadFormCam1" style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="hidden" name="camera_id" value="1" />
+            <input type="hidden" name="entry_line" id="entryLineCam1" value="" />
+            <input type="hidden" name="exit_line" id="exitLineCam1" value="" />
+            <input type="file" id="videoInputCam1" name="video" accept=".mp4,.webm,.avi" style="flex: 1; padding: 8px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm);" required />
+            <button type="submit" class="btn btn-primary" id="btnCam1" style="padding: 8px 16px;">Process</button>
+          </form>
+          <p id="statusCam1" style="color: var(--success); font-size: 0.9rem; margin-bottom: 15px; display: none;"></p>
+          
+          <div id="calibrationContainerCam1" style="display: none; margin-bottom: 15px; position: relative;">
+            <p style="font-size: 0.85em; color: var(--warning); margin-bottom: 5px;" id="calibrationHintCam1">Set 4 points (1&2=Entry, 3&4=Exit). Click to draw.</p>
+            <canvas id="calibrationCanvasCam1" style="width: 100%; border-radius: var(--radius-sm); border: 2px dashed rgba(255,255,255,0.3); cursor: crosshair;"></canvas>
+            <button type="button" class="btn btn-secondary" id="btnResetCam1" style="position: absolute; top: 35px; right: 10px; padding: 4px 8px; font-size: 0.8em; background: var(--surface); border: 1px solid var(--border); color: var(--text);">Clear Lines</button>
+          </div>
+          
+          <video id="playerCam1" controls preload="auto" style="width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);"></video>
+          <img id="streamCam1" style="display:none; width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);" />
+          
+          <div style="margin-top: 20px; text-align: center; background: var(--surface); padding: 15px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <p class="stat-label">Processed Box Count (Front View)</p>
+            <p class="stat-number" id="boxCountCam1" style="color: var(--text); font-size: 2.5rem; margin-top: 5px;">0</p>
+          </div>
         </div>
         
-        <div class="results-grid">
-            <div class="stat-card stat-purple">
-                <p class="stat-number" id="truckExitEvents">0</p>
-                <p class="stat-label">Truck Exit Events</p>
-            </div>
-            <div class="stat-card stat-purple" style="opacity: 0.8;">
-                <p class="stat-number" id="stagingArrivalEvents">0</p>
-                <p class="stat-label">Staging Arrival Events</p>
-            </div>
-        </div>
-
-        <div class="download-bar" style="justify-content: center; padding: 24px;">
-            <button class="btn btn-primary" id="btnAudit" style="font-size: 1rem; padding: 14px 28px;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                Initiate Static Stack Audit
-            </button>
-        </div>
-      </div>
-      
-      <div class="audit-result-card" id="auditResult">
-          <h3 class="status-large" id="auditStatusTitle">PASS</h3>
-          <p class="step-desc" id="auditDesc" style="margin-bottom: 16px;">Inventory appears consistent.</p>
+        <!-- Camera 2: Side / Staging View -->
+        <div class="card glass-card" style="flex: 1; min-width: 45%;">
+          <h3 style="margin-bottom: 15px; color: var(--secondary);">Side View Camera (Staging)</h3>
           
-          <div class="results-grid" style="background: rgba(0,0,0,0.2); border-radius: var(--radius-sm);">
-            <div class="stat-card">
-              <p class="stat-number" id="auditLiveCount" style="color: var(--text);">0</p>
-              <p class="stat-label">Live Count</p>
-            </div>
-            <div class="stat-card">
-              <p class="stat-number" id="auditEstimateCount" style="color: var(--text);">0</p>
-              <p class="stat-label">Audit Estimate</p>
-            </div>
-            <div class="stat-card">
-              <p class="stat-number" id="auditDifference" style="color: var(--text);">0</p>
-              <p class="stat-label">Difference</p>
-            </div>
+          <form id="uploadFormCam2" style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="hidden" name="camera_id" value="2" />
+            <input type="hidden" name="entry_line" id="entryLineCam2" value="" />
+            <input type="hidden" name="exit_line" id="exitLineCam2" value="" />
+            <input type="file" id="videoInputCam2" name="video" accept=".mp4,.webm,.avi" style="flex: 1; padding: 8px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm);" required />
+            <button type="submit" class="btn btn-primary" id="btnCam2" style="padding: 8px 16px;">Process</button>
+          </form>
+          <p id="statusCam2" style="color: var(--success); font-size: 0.9rem; margin-bottom: 15px; display: none;"></p>
+          
+          <div id="calibrationContainerCam2" style="display: none; margin-bottom: 15px; position: relative;">
+            <p style="font-size: 0.85em; color: var(--warning); margin-bottom: 5px;" id="calibrationHintCam2">Set 4 points (1&2=Entry, 3&4=Exit). Click to draw.</p>
+            <canvas id="calibrationCanvasCam2" style="width: 100%; border-radius: var(--radius-sm); border: 2px dashed rgba(255,255,255,0.3); cursor: crosshair;"></canvas>
+            <button type="button" class="btn btn-secondary" id="btnResetCam2" style="position: absolute; top: 35px; right: 10px; padding: 4px 8px; font-size: 0.8em; background: var(--surface); border: 1px solid var(--border); color: var(--text);">Clear Lines</button>
           </div>
+          
+          <video id="playerCam2" controls preload="auto" style="width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);"></video>
+          <img id="streamCam2" style="display:none; width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);" />
+          
+          <div style="margin-top: 20px; text-align: center; background: var(--surface); padding: 15px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <p class="stat-label">Processed Box Count (Side View)</p>
+            <p class="stat-number" id="boxCountCam2" style="color: var(--text); font-size: 2.5rem; margin-top: 5px;">0</p>
+          </div>
+        </div>
+        
       </div>
-      
+    </section>
+
+    <section class="step-section" id="trend-analysis-section" style="margin-top: 40px;">
+      <div class="step-header">
+        <div>
+          <h2 class="step-title">Trend Analysis</h2>
+          <p class="step-desc">Cumulative box throughput mapped historically across processing nodes</p>
+        </div>
+      </div>
+      <div class="card glass-card">
+        <canvas id="trendChart" style="width: 100%; max-height: 400px;"></canvas>
+      </div>
     </section>
 
   </main>

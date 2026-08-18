@@ -8,11 +8,12 @@ This Proof of Concept (POC) acts as a vision-based digital twin module for Indus
 
 * **`backend/`**: Contains the central Flask server (`app.py`) with an SQLite database (`inventory_state.db`) acting as the inventory source-of-truth.
 * **`dashboard/`**: Contains a web-based GUI for end-to-end processing demonstrations (uploading videos, visually drawing tripwires). Features a modern light theme and Chart.js trend analysis.
-* **`demo/`**: Contains standalone scripts (`demo_wms.py`, `get_video_coord.py`) for processing videos in isolation (PoC).
 * **`edge/`**: Contains the simulated edge node (`edge_node.py` and `box_state_machine.py`) that captures video, runs YOLO + tracker, and pushes events to the backend.
 * **`models/`**: House the YOLOv8 weights (e.g., `best.pt`).
+* **`tests/`**: Unit tests for backend logic and edge tracking state machines.
+* **`tools/`**: Utilities for dataset management, model training, and ROI annotation.
 * **`videos/`**: Directory for test video footage.
-* **`datasets/` & `tools/`**: Utilities and data used for model training and annotations.
+* **`architecture_overview.md`**: High-level system architecture and integration details.
 
 ## 🚀 Key Features
 
@@ -84,10 +85,11 @@ python edge/edge_node.py --camera 2
 ```
 *Press `c` on the camera feed window to live-calibrate the tripwire.*
 
-### 3. Standalone Script
-If you want to run the pipeline exactly as it was originally built for a single video.
-1. Get the coordinates: `python demo/get_video_coord.py`
-2. Run the tracker: `python demo/demo_wms.py`
+### 3. Development and Testing
+You can run the included test suite to validate the system logic:
+```bash
+pytest tests/
+```
 
 ## 📊 Outputs & Deliverables
 * **`wms_annotated_output.mp4`**: Rendered tracker video with bounding boxes and HUD stats.

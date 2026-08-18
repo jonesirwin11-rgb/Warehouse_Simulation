@@ -5,6 +5,21 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from edge.config import LATEST_STAGING_OUTPUT, AUDIT_THRESHOLD, KNOWN_CARTON_DIMENSIONS
 
+# ==========================================
+# Task 6 — Reconciliation threshold constants
+# ==========================================
+DEFAULT_DISCREPANCY_THRESHOLD_ABS = 2
+DEFAULT_DISCREPANCY_THRESHOLD_PCT = 0.10
+
+
+def needs_review(tracked_count, audit_count):
+    """Returns True when the gap between tracked and audit counts exceeds
+    the adaptive threshold (whichever is larger: absolute or percentage)."""
+    threshold = max(DEFAULT_DISCREPANCY_THRESHOLD_ABS,
+                    tracked_count * DEFAULT_DISCREPANCY_THRESHOLD_PCT)
+    return abs(tracked_count - audit_count) > threshold
+
+
 class StaticStackAudit:
     def __init__(self, model_path=None):
         if model_path is None:
@@ -57,17 +72,23 @@ class StaticStackAudit:
 
     def reconcile(self, live_inventory_count, audit_estimate):
         """
-        Compares the live count against the audit estimate and produces PASS or WARNING.
+        Compares the live count against the audit estimate.
+        The audit is ADVISORY ONLY — it flags discrepancies but never
+        overwrites the tracked count.
         """
         difference = abs(live_inventory_count - audit_estimate)
+        review_flag = needs_review(live_inventory_count, audit_estimate)
+
+        # Legacy pass/warning kept for backward compat
         status = "PASS" if difference <= AUDIT_THRESHOLD else "WARNING"
 
         return {
             "status": status,
+            "needs_review": review_flag,
             "live_count": live_inventory_count,
             "audit_count": audit_estimate,
             "difference": difference,
-            "threshold": AUDIT_THRESHOLD
+            "threshold": AUDIT_THRESHOLD,
         }
 
 if __name__ == "__main__":
