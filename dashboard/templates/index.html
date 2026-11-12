@@ -3,149 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Warehouse Vision AI — Live Dashboard</title>
+  <title>WMS Edge Hub — Live Dashboard</title>
   <meta name="description" content="AI-powered warehouse dock monitoring and live inventory." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    .audit-result-card {
-        padding: 24px;
-        margin-top: 24px;
-        border-radius: var(--radius);
-        text-align: center;
-        display: none;
-    }
-    .audit-result-card.pass {
-        background: var(--green-dim);
-        border: 1px solid var(--green);
-    }
-    .audit-result-card.warning {
-        background: var(--red-dim);
-        border: 1px solid var(--red);
-        animation: pulse-red 2s infinite;
-    }
-    @keyframes pulse-red {
-        0% { box-shadow: 0 0 0 0 rgba(255,107,107, 0.4); }
-        70% { box-shadow: 0 0 0 15px rgba(255,107,107, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(255,107,107, 0); }
-    }
-    
-    .status-large { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
-    .status-large.pass-text { color: var(--green); }
-    .status-large.warning-text { color: var(--red); }
-  </style>
 </head>
 <body>
-  <div class="ambient-bg">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-  </div>
-
-  <nav class="topbar">
-    <header class="header" style="justify-content: space-between;">
-      <div style="display: flex; align-items: center; gap: 15px;">
-          <div class="logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-          </div>
-          <h1>WMS Edge Hub</h1>
+  <nav class="topbar topbar-compact">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <div class="logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="header-title">WMS Edge Hub</h1>
+          <p class="header-subtitle">Automated Dock &amp; Trolley Counting</p>
+        </div>
       </div>
-      <button class="btn btn-primary" id="btnResetData" style="background: var(--red-dim); border: 1px solid var(--red); color: var(--red); box-shadow: none;">Clear Old Records</button>
-    </header>
-    <div class="topbar-actions">
-      <div class="status-chip running" id="globalStatus">
-        <span class="status-dot"></span>
-        <span class="status-text">Connected</span>
+
+      <div class="topbar-actions">
+        <div class="status-chip running" id="globalStatus">
+          <span class="status-dot"></span>
+          <span class="status-text">Connected</span>
+        </div>
+        <button class="btn btn-danger-outline" id="btnResetData">Clear Old Records</button>
+        <a href="/results" class="btn btn-primary" id="btnViewAnalysis">View Analysis &rarr;</a>
       </div>
     </div>
   </nav>
 
-  <main class="main-container">
-    
-    <section id="parallel-cameras-section" style="margin-top: 40px;">
+  <main class="main-container trolley-container">
+    {% for trolley in [1, 2] %}
+    <section class="step-section" id="trolley-{{ trolley }}-section">
       <div class="step-header">
         <div>
-          <h2 class="step-title">Camera Feed Analysis</h2>
-          <p class="step-desc">Independently upload and process footage for Front and Side views</p>
+          <span class="section-eyebrow">Bay Feed {{ trolley }}</span>
+          <h2 class="step-title">Trolley {{ trolley }} Feed Analysis</h2>
+          <p class="step-desc">Independently upload and process Dock and Side footage for Trolley {{ trolley }}</p>
         </div>
       </div>
-      
-      <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
-        
-        <!-- Camera 1: Front / Truck View -->
-        <div class="card glass-card" style="flex: 1; min-width: 45%;">
-          <h3 style="margin-bottom: 15px; color: var(--primary);">Front View Camera (Truck)</h3>
-          
-          <form id="uploadFormCam1" style="display: flex; gap: 10px; margin-bottom: 15px;">
-            <input type="hidden" name="camera_id" value="1" />
-            <input type="hidden" name="entry_line" id="entryLineCam1" value="" />
-            <input type="hidden" name="exit_line" id="exitLineCam1" value="" />
-            <input type="file" id="videoInputCam1" name="video" accept=".mp4,.webm,.avi" style="flex: 1; padding: 8px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm);" required />
-            <button type="submit" class="btn btn-primary" id="btnCam1" style="padding: 8px 16px;">Process</button>
+
+      <div class="trolley-grid">
+        {% for cam_id, view_label, view_tag in [(1, 'Dock View', 'Tripwire Counter'), (2, 'Side View', 'Staging ROI')] %}
+        {% set slot = 't' ~ trolley ~ '_cam' ~ cam_id %}
+        <div class="card glass-card feed-card">
+          <div class="feed-card-header">
+            <h3 class="feed-card-title">{{ view_label }}</h3>
+            <span class="feed-tag">{{ view_tag }}</span>
+          </div>
+
+          <form id="uploadForm_{{ slot }}" class="upload-row" data-slot="{{ slot }}">
+            <input type="hidden" name="trolley_id" value="{{ trolley }}" />
+            <input type="hidden" name="camera_id" value="{{ cam_id }}" />
+            <input type="hidden" name="slot_id" value="{{ slot }}" />
+            <input type="hidden" name="entry_line" id="entryLine_{{ slot }}" value="" />
+            <input type="hidden" name="exit_line" id="exitLine_{{ slot }}" value="" />
+            <input type="file" id="videoInput_{{ slot }}" name="video" accept=".mp4,.webm,.avi" class="file-input" required />
+            <button type="submit" class="btn btn-primary" id="btn_{{ slot }}">Process</button>
           </form>
-          <p id="statusCam1" style="color: var(--success); font-size: 0.9rem; margin-bottom: 15px; display: none;"></p>
-          
-          <div id="calibrationContainerCam1" style="display: none; margin-bottom: 15px; position: relative;">
-            <p style="font-size: 0.85em; color: var(--warning); margin-bottom: 5px;" id="calibrationHintCam1">Set 4 points (1&2=Entry, 3&4=Exit). Click to draw.</p>
-            <canvas id="calibrationCanvasCam1" style="width: 100%; border-radius: var(--radius-sm); border: 2px dashed rgba(255,255,255,0.3); cursor: crosshair;"></canvas>
-            <button type="button" class="btn btn-secondary" id="btnResetCam1" style="position: absolute; top: 35px; right: 10px; padding: 4px 8px; font-size: 0.8em; background: var(--surface); border: 1px solid var(--border); color: var(--text);">Clear Lines</button>
+
+          <p id="status_{{ slot }}" class="feed-status"></p>
+
+          <div id="calibrationContainer_{{ slot }}" class="calib-container">
+            <p id="calibrationHint_{{ slot }}" class="calib-hint">Set 4 points (1&amp;2=Entry, 3&amp;4=Exit). Click to draw. (Optional)</p>
+            <canvas id="calibrationCanvas_{{ slot }}" class="calib-canvas"></canvas>
+            <button type="button" class="btn btn-ghost calib-clear-btn" id="btnReset_{{ slot }}">Clear Lines</button>
           </div>
-          
-          <video id="playerCam1" controls preload="auto" style="width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);"></video>
-          <img id="streamCam1" style="display:none; width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);" />
-          
-          <div style="margin-top: 20px; text-align: center; background: var(--surface); padding: 15px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-            <p class="stat-label">Processed Box Count (Front View)</p>
-            <p class="stat-number" id="boxCountCam1" style="color: var(--text); font-size: 2.5rem; margin-top: 5px;">0</p>
-          </div>
+
+          <video id="player_{{ slot }}" controls preload="auto" class="feed-video"></video>
+          <img id="stream_{{ slot }}" class="feed-stream" alt="Live processing stream" />
         </div>
-        
-        <!-- Camera 2: Side / Staging View -->
-        <div class="card glass-card" style="flex: 1; min-width: 45%;">
-          <h3 style="margin-bottom: 15px; color: var(--secondary);">Side View Camera (Staging)</h3>
-          
-          <form id="uploadFormCam2" style="display: flex; gap: 10px; margin-bottom: 15px;">
-            <input type="hidden" name="camera_id" value="2" />
-            <input type="hidden" name="entry_line" id="entryLineCam2" value="" />
-            <input type="hidden" name="exit_line" id="exitLineCam2" value="" />
-            <input type="file" id="videoInputCam2" name="video" accept=".mp4,.webm,.avi" style="flex: 1; padding: 8px; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm);" required />
-            <button type="submit" class="btn btn-primary" id="btnCam2" style="padding: 8px 16px;">Process</button>
-          </form>
-          <p id="statusCam2" style="color: var(--success); font-size: 0.9rem; margin-bottom: 15px; display: none;"></p>
-          
-          <div id="calibrationContainerCam2" style="display: none; margin-bottom: 15px; position: relative;">
-            <p style="font-size: 0.85em; color: var(--warning); margin-bottom: 5px;" id="calibrationHintCam2">Set 4 points (1&2=Entry, 3&4=Exit). Click to draw.</p>
-            <canvas id="calibrationCanvasCam2" style="width: 100%; border-radius: var(--radius-sm); border: 2px dashed rgba(255,255,255,0.3); cursor: crosshair;"></canvas>
-            <button type="button" class="btn btn-secondary" id="btnResetCam2" style="position: absolute; top: 35px; right: 10px; padding: 4px 8px; font-size: 0.8em; background: var(--surface); border: 1px solid var(--border); color: var(--text);">Clear Lines</button>
-          </div>
-          
-          <video id="playerCam2" controls preload="auto" style="width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);"></video>
-          <img id="streamCam2" style="display:none; width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border);" />
-          
-          <div style="margin-top: 20px; text-align: center; background: var(--surface); padding: 15px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-            <p class="stat-label">Processed Box Count (Side View)</p>
-            <p class="stat-number" id="boxCountCam2" style="color: var(--text); font-size: 2.5rem; margin-top: 5px;">0</p>
-          </div>
-        </div>
-        
+        {% endfor %}
       </div>
     </section>
-
-    <section class="step-section" id="trend-analysis-section" style="margin-top: 40px;">
-      <div class="step-header">
-        <div>
-          <h2 class="step-title">Trend Analysis</h2>
-          <p class="step-desc">Cumulative box throughput mapped historically across processing nodes</p>
-        </div>
-      </div>
-      <div class="card glass-card">
-        <canvas id="trendChart" style="width: 100%; max-height: 400px;"></canvas>
-      </div>
-    </section>
-
+    {% endfor %}
   </main>
 
   <div class="toast-container" id="toastContainer"></div>

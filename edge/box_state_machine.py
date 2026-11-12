@@ -22,6 +22,7 @@ SIZE_RATIO_TOLERANCE = 0.25  # 25% width/height difference allowed
 # ==========================================
 MIN_CONFIRM_AGE_FRAMES = 5          # a real crossing spans multiple frames; tune against footage
 MIN_CONFIRM_DISPLACEMENT_PX = 150    # calibrate relative to observed box width (~150-200px in this footage)
+MIN_CONFIRM_WIDTH_FRAC = 0.12        # reject narrow partial/edge slivers (<12% of frame width)
 
 
 # ==========================================
@@ -111,13 +112,17 @@ def is_likely_id_switch(new_track, recent_completed_tracks, now):
         return True  # same window, same spot, same size → ID-switch
     return False
 
-def is_eligible_to_confirm(track, current_frame_idx):
-    """A track must be old enough AND have moved enough to be a plausible real
-    crossing. Rejects tracks that spawn inside/near the hysteresis band and
-    jitter across it from detection noise with no real motion behind them."""
+def is_eligible_to_confirm(track, current_frame_idx, min_width_px: float = 0.0):
+    """A track must be old enough, wide enough, and have moved enough to be a
+    plausible real crossing. Rejects tracks that spawn inside/near the
+    hysteresis band and jitter across it from detection noise, as well as
+    narrow edge slivers."""
     age = current_frame_idx - track["first_frame_idx"]
     if age < MIN_CONFIRM_AGE_FRAMES:
         return False, f"too young ({age} frames)"
+
+    if min_width_px > 0 and track.get("width", 0.0) < min_width_px:
+        return False, f"width too small ({track.get('width', 0.0):.0f}px)"
 
     dx = track["foot_point"][0] - track["first_foot_point"][0]
     dy = track["foot_point"][1] - track["first_foot_point"][1]
@@ -214,7 +219,7 @@ class BoxStateMachine:
         # Task 2: recently completed tracks for ID-switch detection
         self.recent_completed_tracks = []
 
-    def update(self, detections, frame_idx: int, fps: float):
+    def update(self, detections, frame_idx: int, fps: float, frame_width: int = None):
         """
         Receives Supervision detections (post-tracker).
         Returns a list of newly confirmed tracker IDs in this tick.
@@ -287,7 +292,8 @@ class BoxStateMachine:
                 track["state"] = "LINE_1_CROSSED"
 
             if crossed_exit and track["state"] in ("NEW", "LINE_1_CROSSED"):
-                eligible, reason = is_eligible_to_confirm(track, frame_idx)
+                min_w = frame_width * MIN_CONFIRM_WIDTH_FRAC if frame_width else 0.0
+                eligible, reason = is_eligible_to_confirm(track, frame_idx, min_width_px=min_w)
                 if not eligible:
                     track["state"] = "REJECTED_INELIGIBLE"
                     self.completed_ids.add(tracker_id)
@@ -300,7 +306,11 @@ class BoxStateMachine:
                     "width": w,
                     "height": h,
                 }
-                if is_likely_id_switch(candidate, self.recent_completed_tracks, now):
+                eligible_recent = [
+                    rt for rt in self.recent_completed_tracks
+                    if rt.get("frame_idx", frame_idx) <= track.get("first_frame_idx", frame_idx)
+                ]
+                if is_likely_id_switch(candidate, eligible_recent, now):
                     track["state"] = "SUPPRESSED_ID_SWITCH"
                     self.completed_ids.add(tracker_id)  # lock so we don't revisit
                     print(f"[SUPPRESSED] track {tracker_id} flagged as ID-switch "

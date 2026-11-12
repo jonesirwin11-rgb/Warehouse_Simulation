@@ -44,7 +44,7 @@ def update_config_file(camera_id, points):
     with open(config_path, "r") as f:
         content = f.read()
 
-    prefix = "CAM1" if camera_id == CAM1_ID else "CAM2"
+    prefix = "CAM1" if "CAM01" in camera_id else "CAM2"
     entry_str = f'{prefix}_LINE_ENTRY = (sv.Point({points[0][0]}, {points[0][1]}), sv.Point({points[1][0]}, {points[1][1]}))'
     exit_str = f'{prefix}_LINE_EXIT = (sv.Point({points[2][0]}, {points[2][1]}), sv.Point({points[3][0]}, {points[3][1]}))'
 
@@ -88,17 +88,19 @@ def main():
                         help="Optional override: x1,y1,x2,y2 for entry tripwire")
     parser.add_argument("--exit-line", type=str, default=None, dest="exit_line",
                         help="Optional override: x1,y1,x2,y2 for exit tripwire")
+    parser.add_argument("--camera-name", type=str, default=None, dest="camera_name",
+                        help="Optional logical camera identifier (e.g. T1_CAM01, T2_CAM02)")
     args = parser.parse_args()
 
     # Apply configuration for chosen camera
     if args.camera == 1:
-        CAMERA_ID = CAM1_ID
+        CAMERA_ID = args.camera_name or CAM1_ID
         VIDEO_SOURCE = CAM1_VIDEO_SOURCE
         ENTRY_COORDS = CAM1_LINE_ENTRY
         EXIT_COORDS = CAM1_LINE_EXIT
         EVENT_TYPE = "TRUCK_EXIT_EVENT"
     else:
-        CAMERA_ID = CAM2_ID
+        CAMERA_ID = args.camera_name or CAM2_ID
         VIDEO_SOURCE = CAM2_VIDEO_SOURCE
         ENTRY_COORDS = CAM2_LINE_ENTRY
         EXIT_COORDS = CAM2_LINE_EXIT
@@ -245,12 +247,12 @@ def main():
             cv2.imwrite(LATEST_STAGING_OUTPUT, frame)
 
         if args.camera == 1:
-            results = model(frame, conf=0.50, iou=0.45, verbose=False)[0]
+            results = model(frame, conf=0.50, iou=0.50, verbose=False)[0]
             detections = sv.Detections.from_ultralytics(results)
             detections = detections[detections.class_id == box_class_id]
             
             detections = tracker.update_with_detections(detections)
-            confirmed_ids = state_machine.update(detections, frame_idx, fps)
+            confirmed_ids = state_machine.update(detections, frame_idx, fps, frame_width=frame.shape[1])
             
             frame_idx += 1
             if confirmed_ids:

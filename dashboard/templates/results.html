@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WMS Edge Hub — Analysis Results</title>
+  <meta name="description" content="Warehouse turnaround time and per-trolley box analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <nav class="topbar topbar-compact">
+    <div class="topbar-inner">
+      <div class="topbar-brand">
+        <div class="logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="header-title">WMS Edge Hub</h1>
+          <p class="header-subtitle">Turnaround &amp; Box Count Analysis</p>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <a href="/" class="btn btn-primary" id="btnBackDashboard">&larr; Back to Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-container trolley-container">
+    <section class="step-section" id="trend-analysis-section">
+      <div class="step-header">
+        <div>
+          <span class="section-eyebrow">Throughput Overview</span>
+          <h2 class="step-title">Trend Analysis</h2>
+          <p class="step-desc">Box throughput and turnaround time mapped across trolley nodes</p>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-blue">
+          <span class="kpi-label">Trolley 1 Boxes</span>
+          <strong class="kpi-value" id="trolley1Summary">0</strong>
+          <span class="kpi-meta" id="trolley1TimeMeta">Time taken: 0.0s</span>
+        </div>
+        <div class="kpi-card kpi-sky">
+          <span class="kpi-label">Trolley 2 Boxes</span>
+          <strong class="kpi-value" id="trolley2Summary">0</strong>
+          <span class="kpi-meta" id="trolley2TimeMeta">Time taken: 0.0s</span>
+        </div>
+        <div class="kpi-card kpi-green">
+          <span class="kpi-label">Total Boxes in Truck</span>
+          <strong class="kpi-value" id="truckSummary">0</strong>
+          <span class="kpi-meta">Combined verified count</span>
+        </div>
+        <div class="kpi-card kpi-slate">
+          <span class="kpi-label">Turn Around Time (TAT)</span>
+          <strong class="kpi-value" id="tatSummary">0m 0s</strong>
+          <span class="kpi-meta" id="tatSecondsMeta">Total elapsed: 0.0s</span>
+        </div>
+      </div>
+
+      <div class="card glass-card results-card">
+        <div class="chart-box">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/results.js"></script>
+</body>
+</html>

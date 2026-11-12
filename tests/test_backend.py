@@ -7,7 +7,7 @@ import pytest
 # Allow imports from the backend/ directory
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "backend"))
 
-from app import init_db, save_state, load_state
+from app import init_db, save_state, load_state, log_event, compute_trolley_analysis, app as flask_app
 from audit import needs_review
 
 
@@ -82,3 +82,66 @@ class TestNeedsReview:
     def test_zero_tracked_uses_absolute(self):
         """Edge case: 0 tracked, 3 audit → exceeds abs threshold of 2."""
         assert needs_review(0, 3) is True
+
+
+class TestTrolleyAnalysis:
+    def test_empty_event_log_returns_zeroes(self, tmp_path):
+        conn = init_db(str(tmp_path / "empty_analysis.db"))
+        result = compute_trolley_analysis(conn)
+        assert result["trolley_1"] == {"dock_boxes": 0, "side_boxes": 0, "boxes": 0, "time_sec": 0.0}
+        assert result["trolley_2"] == {"dock_boxes": 0, "side_boxes": 0, "boxes": 0, "time_sec": 0.0}
+        assert result["total"] == {"boxes": 0, "time_sec": 0.0, "tat_formatted": "0m 0s"}
+        conn.close()
+
+    def test_trolley_counting_and_tat_aggregation(self, tmp_path):
+        conn = init_db(str(tmp_path / "trolley_analysis.db"))
+        log_event(conn, {
+            "event_id": "e1", "camera_id": "T1_CAM01", "event_type": "TRUCK_EXIT_EVENT",
+            "quantity": 10, "tracker_ids": list(range(10)), "video_t_sec": [1.8, 7.87], "confidence": 0.8
+        })
+        log_event(conn, {
+            "event_id": "e2", "camera_id": "T1_CAM02", "event_type": "STAGING_ARRIVAL_EVENT",
+            "quantity": 30, "tracker_ids": list(range(30)), "video_t_sec": [16.43], "confidence": 0.5
+        })
+        log_event(conn, {
+            "event_id": "e3", "camera_id": "T2_CAM01", "event_type": "TRUCK_EXIT_EVENT",
+            "quantity": 6, "tracker_ids": list(range(6)), "video_t_sec": [12.1], "confidence": 0.8
+        })
+        log_event(conn, {
+            "event_id": "e4", "camera_id": "T2_CAM02", "event_type": "STAGING_ARRIVAL_EVENT",
+            "quantity": 5, "tracker_ids": list(range(5)), "video_t_sec": [14.6], "confidence": 0.6
+        })
+        result = compute_trolley_analysis(conn)
+        assert result["trolley_1"]["dock_boxes"] == 10
+        assert result["trolley_1"]["side_boxes"] == 30
+        assert result["trolley_1"]["boxes"] == 30
+        assert result["trolley_1"]["time_sec"] == 16.4
+        assert result["trolley_2"]["dock_boxes"] == 6
+        assert result["trolley_2"]["side_boxes"] == 5
+        assert result["trolley_2"]["boxes"] == 18
+        assert result["trolley_2"]["time_sec"] == 14.6
+        assert result["total"]["boxes"] == 48
+        assert result["total"]["time_sec"] == 31.0
+        assert result["total"]["tat_formatted"] == "0m 31s"
+        conn.close()
+
+    def test_trolley_side_view_fallback_when_no_dock_events(self, tmp_path):
+        conn = init_db(str(tmp_path / "trolley_side_only.db"))
+        log_event(conn, {
+            "event_id": "e1", "camera_id": "T1_CAM02", "event_type": "STAGING_ARRIVAL_EVENT",
+            "quantity": 30, "tracker_ids": list(range(30)), "video_t_sec": [12.0], "confidence": 0.7
+        })
+        result = compute_trolley_analysis(conn)
+        assert result["trolley_1"]["boxes"] == 30
+        assert result["trolley_2"]["boxes"] == 0
+        assert result["total"]["boxes"] == 30
+        conn.close()
+
+    def test_results_route_and_api_analysis(self):
+        client = flask_app.test_client()
+        assert client.get("/").status_code == 200
+        assert client.get("/results").status_code == 200
+        resp = client.get("/api/analysis")
+        assert resp.status_code == 200
+        payload = resp.get_json()
+        assert "trolley_1" in payload and "trolley_2" in payload and "total" in payload
